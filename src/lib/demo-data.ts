@@ -1,0 +1,79 @@
+import type { BrandProfile, ContentFlag, ContentReview, Deck, DesignToken, NarrativeAnalysis, PresentationSnapshot, Slide } from "./types";
+
+export const demoBrands: BrandProfile[] = [
+  {
+    id: "brand_nova", name: "Nova Ventures", industry: "Venture Capital",
+    colors: { primary: "#1a1a2e", secondary: "#16213e", accent: "#e94560", background: "#fafafa", text: "#1a1a2e" },
+    typography: { headingFont: "Inter", bodyFont: "Inter", scale: "1.25" },
+    logoUrl: "/brands/nova-ventures.svg"
+  },
+  {
+    id: "brand_meridian", name: "Meridian Health", industry: "Healthcare",
+    colors: { primary: "#0d4f4f", secondary: "#1a7a7a", accent: "#f4a261", background: "#fefefe", text: "#0d4f4f" },
+    typography: { headingFont: "Lora", bodyFont: "Open Sans", scale: "1.2" },
+    logoUrl: "/brands/meridian-health.svg"
+  }
+];
+
+const novaSlides: Slide[] = [
+  { id: "s1", deckId: "deck_nova_q3", position: 1, contentType: "title", title: "Q3 2026 Portfolio Review", body: "Nova Ventures — Confidential", visual: "logo-top-right", notes: "30-second intro", narrativeStrength: 85, flagged: false },
+  { id: "s2", deckId: "deck_nova_q3", position: 2, contentType: "narrative", title: "Where We Are: $340M AUM Across 28 Portfolio Companies", body: "Our portfolio delivered $47M in aggregate revenue growth this quarter. Three companies crossed $10M ARR. Two are preparing Series B. But churn in the early-stage cohort is up 3.2 percentage points — our biggest risk signal.", visual: "metric-card-grid", notes: "Context slide — frame the problem before the data", narrativeStrength: 72, flagged: false },
+  { id: "s3", deckId: "deck_nova_q3", position: 3, contentType: "comparison", title: "Early-Stage vs Growth-Stage Performance", body: "Early-stage cohort: 4.8% monthly churn, $1.2M avg burn rate, 18-month runway. Growth-stage cohort: 1.1% monthly churn, 92% NRR, 9 of 12 companies cash-flow positive.", visual: "side-by-side-bars", notes: "Comparison makes the churn problem concrete", narrativeStrength: 90, flagged: false },
+  { id: "s4", deckId: "deck_nova_q3", position: 4, contentType: "metric", title: "Churn Rate by Cohort: The Early-Stage Gap", body: "4.8% churn vs 2.1% benchmark. At current trajectory, early-stage portfolio loses $3.1M in annual recurring revenue by Q1 2027.", visual: "trend-line-chart", notes: "Single metric, big impact", narrativeStrength: 88, flagged: false },
+  { id: "s5", deckId: "deck_nova_q3", position: 5, contentType: "evidence", title: "Root Cause: Customer Success Staffing Gap", body: "Our five earliest portfolio companies average 0.4 CS hires per $1M ARR. Industry benchmark is 1.2. Companies above 0.8 CS hires show 80% lower churn. This is a fixable operational gap — not a market problem.", visual: "scatter-plot", notes: "Diagnosis before prescription", narrativeStrength: 93, flagged: false },
+  { id: "s6", deckId: "deck_nova_q3", position: 6, contentType: "timeline", title: "90-Day Intervention Plan", body: "Week 1–2: CS gap audit across early-stage cohort. Week 3–6: Embedded CS advisor deployment (shared across 3 companies). Week 7–12: Bi-weekly churn review with portfolio founders. Target: reduce early-stage churn to 3.2% by Q4.", visual: "timeline-horizontal", notes: "Concrete, time-boxed plan", narrativeStrength: 86, flagged: false },
+  { id: "s7", deckId: "deck_nova_q3", position: 7, contentType: "metric", title: "Projected Impact: $2.1M Annual Revenue Saved", body: "Conservative estimate: reducing churn from 4.8% to 3.2% saves $2.1M in annual recurring revenue across the early-stage cohort. Investment required: $240K for embedded CS advisors. 8.75x projected return.", visual: "roi-breakdown", notes: "Close with the ROI", narrativeStrength: 91, flagged: false },
+  { id: "s8", deckId: "deck_nova_q3", position: 8, contentType: "cta", title: "Recommendation", body: "Approve $240K for embedded CS advisor program targeting early-stage portfolio companies. Review churn metrics at the October partner meeting.", visual: "cta-card", notes: "Clear ask, clear timeline", narrativeStrength: 84, flagged: false }
+];
+
+export const demoDeck: Deck = {
+  id: "deck_nova_q3", brandId: "brand_nova", title: "Q3 2026 Portfolio Review",
+  description: "Quarterly portfolio review for Nova Ventures LP meeting. Focus: early-stage churn analysis and 90-day intervention plan.",
+  slideCount: 8, narrativeScore: 86, createdBy: "AI Deck Generator v3",
+  slides: novaSlides
+};
+
+export const demoNarrativeAnalysis: NarrativeAnalysis = {
+  deckId: "deck_nova_q3",
+  hasArc: true,
+  arcPattern: "Problem → Evidence → Root Cause → Solution → ROI → Ask",
+  weakSlides: [2],
+  strongSlides: [5, 7],
+  recommendations: [
+    "Slide 2 (context) could be split into two slides: one for the positive metrics and one for the risk signal. Currently it buries the problem in the middle of good news.",
+    "Add a customer quote slide between slides 4 and 5 to humanize the churn data before presenting the root cause analysis."
+  ]
+};
+
+const contentFlags: ContentFlag[] = [
+  { slideId: "s2", issue: "Dense text — 47 words in body. Recommended: 25–35 for a narrative slide.", severity: "minor", suggestion: "Split into two slides or reduce to the key headline: '$47M growth, 3 companies at $10M+ ARR, but early-stage churn rising.'" },
+  { slideId: "s5", issue: "No visual label on scatter plot axes.", severity: "major", suggestion: "Add axis labels: X-axis = CS hires per $1M ARR, Y-axis = monthly churn rate. Include the benchmark reference line." },
+  { slideId: "s8", issue: "CTA slide lacks specific deadline.", severity: "minor", suggestion: "Add: 'Decision needed by September 15 to begin advisor onboarding October 1.'" }
+];
+
+export const demoContentReview: ContentReview = {
+  deckId: "deck_nova_q3", overallScore: 82,
+  flags: contentFlags,
+  timeEstimate: "~12 minutes to address all flags"
+};
+
+export const demoDesignTokens: DesignToken[] = [
+  { id: "tok_primary", name: "Primary Color", value: "#1a1a2e", category: "color" },
+  { id: "tok_secondary", name: "Secondary Color", value: "#16213e", category: "color" },
+  { id: "tok_accent", name: "Accent Color", value: "#e94560", category: "color" },
+  { id: "tok_bg", name: "Background", value: "#fafafa", category: "color" },
+  { id: "tok_text", name: "Text Color", value: "#1a1a2e", category: "color" },
+  { id: "tok_heading", name: "Heading Font", value: "Inter", category: "typography" },
+  { id: "tok_body", name: "Body Font", value: "Inter", category: "typography" },
+  { id: "tok_scale", name: "Type Scale", value: "1.25 (Major Third)", category: "typography" },
+  { id: "tok_spacing", name: "Grid Spacing", value: "8px base grid", category: "spacing" },
+  { id: "tok_logo", name: "Logo Position", value: "Top-right, 48px", category: "logo" }
+];
+
+export const demoSnapshot: PresentationSnapshot = {
+  brands: demoBrands,
+  activeDeck: demoDeck,
+  narrativeAnalysis: demoNarrativeAnalysis,
+  contentReview: demoContentReview,
+  designTokens: demoDesignTokens
+};
