@@ -149,13 +149,28 @@ export interface ContentReview {
   timeEstimate: string;
 }
 
-export interface AccessibilityIssue {
+export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title";
+
+interface AccessibilityIssueBase {
   slideId: string;
-  type: "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title";
   severity: "minor" | "major" | "critical";
   description: string;
   recommendation: string;
 }
+
+export interface AltTextAccessibilityIssue extends AccessibilityIssueBase {
+  type: "alt-text";
+  objectName: string;
+  altTextSource: "ai-generated" | "author-written" | "missing";
+  altTextReviewStatus: "unreviewed" | "needs-revision" | "approved";
+  currentAltText: string;
+}
+
+export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
+  type: Exclude<AccessibilityIssueType, "alt-text">;
+}
+
+export type AccessibilityIssue = AltTextAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;

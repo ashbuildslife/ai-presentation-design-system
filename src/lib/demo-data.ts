@@ -1,4 +1,4 @@
-import type { AccessibilityReport, BoardReadinessGate, BrandConsistencyIssue, BrandConsistencyReport, BrandProfile, ContentDensityIssue, ContentDensityReport, ContentFlag, ContentReview, Deck, DesignToken, NarrativeAnalysis, PresentationSnapshot, Slide, SourceEvidence, SourceExportGuard, SourceVerificationIssue, SourceVerificationReport, SourceVerifiedClaim, StructureAuditIssue, StructureAuditReport } from "./types";
+import type { AccessibilityIssue, AccessibilityReport, BoardReadinessGate, BrandConsistencyIssue, BrandConsistencyReport, BrandProfile, ContentDensityIssue, ContentDensityReport, ContentFlag, ContentReview, Deck, DesignToken, NarrativeAnalysis, PresentationSnapshot, Slide, SourceEvidence, SourceExportGuard, SourceVerificationIssue, SourceVerificationReport, SourceVerifiedClaim, StructureAuditIssue, StructureAuditReport } from "./types";
 
 export const demoBrands: BrandProfile[] = [
   {
@@ -45,7 +45,7 @@ export const demoNarrativeAnalysis: NarrativeAnalysis = {
   ]
 };
 
-const accessibilityIssues = [
+const accessibilityIssues: AccessibilityIssue[] = [
   {
     slideId: "s2", type: "font-size" as const, severity: "major" as const,
     description: "Body text at 47 words with no hierarchy — read aloud time exceeds 25 seconds. Presentation audiences can't read and listen simultaneously.",
@@ -67,9 +67,13 @@ const accessibilityIssues = [
     recommendation: "Set annotation font size to ≥ 12px or use #1a1a2e for consistency."
   },
   {
-    slideId: "s5", type: "alt-text" as const, severity: "major" as const,
-    description: "Scatter plot has no alt text or accessible data table. Screen-reader users cannot interpret the CS staffing vs churn relationship.",
-    recommendation: "Add descriptive alt text ('Scatter plot: CS hires per $1M ARR vs monthly churn rate, with benchmark line at 1.2 CS/$M ARR') and a linked data table."
+    slideId: "s5", type: "alt-text", severity: "major",
+    objectName: "CS staffing versus churn scatter plot",
+    altTextSource: "ai-generated",
+    altTextReviewStatus: "needs-revision",
+    currentAltText: "A chart with dots and a line.",
+    description: "The scatter plot retains generic AI-generated alt text that names the object but omits the CS staffing and churn insight. Screen-reader users cannot interpret the relationship, and the generated description has not been approved.",
+    recommendation: "Replace it with contextual alt text: 'Scatter plot: companies above 0.8 CS hires per $1M ARR show 80% lower churn, with a benchmark line at 1.2 CS hires per $1M ARR.' Add a linked data table, then have a named accessibility reviewer approve the text before export."
   },
   {
     slideId: "s6", type: "reading-order" as const, severity: "critical" as const,

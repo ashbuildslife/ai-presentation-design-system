@@ -161,6 +161,31 @@ describe("accessibility report", () => {
     }
   });
 
+  it("does not treat generic AI-generated alt text as export-ready", () => {
+    const altTextIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "alt-text");
+
+    expect(altTextIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of altTextIssues) {
+      expect(issue.objectName.length).toBeGreaterThan(10);
+      expect(issue.altTextSource).toBe("ai-generated");
+      expect(issue.altTextReviewStatus).not.toBe("approved");
+      expect(issue.currentAltText).toMatch(/^A chart/i);
+    }
+  });
+
+  it("requires chart alt text to convey the insight and receive human approval", () => {
+    const chartIssue = demoAccessibilityReport.issues.find(issue => (
+      issue.type === "alt-text" && issue.objectName.includes("scatter plot")
+    ));
+
+    expect(chartIssue).toBeDefined();
+    if (chartIssue?.type === "alt-text") {
+      expect(chartIssue.recommendation).toMatch(/0\.8 CS hires.*80% lower churn/i);
+      expect(chartIssue.recommendation).toMatch(/named accessibility reviewer approve/i);
+      expect(chartIssue.recommendation).toMatch(/linked data table/i);
+    }
+  });
+
   it("all issues reference valid slide IDs", () => {
     const slideIds = new Set(demoDeck.slides.map(s => s.id));
     for (const issue of demoAccessibilityReport.issues) {
