@@ -186,6 +186,28 @@ describe("accessibility report", () => {
     }
   });
 
+  it("records measured thresholds for every contrast issue", () => {
+    const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
+
+    expect(contrastIssues.length).toBeGreaterThanOrEqual(2);
+    for (const issue of contrastIssues) {
+      expect(issue.foreground).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(issue.background).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(issue.measuredRatio).toBeLessThan(issue.requiredRatio);
+      expect(issue.description).toContain(`${issue.measuredRatio.toFixed(1)}:1`);
+    }
+  });
+
+  it("applies WCAG thresholds by rendered element kind", () => {
+    const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
+    const normalTextIssue = contrastIssues.find(issue => issue.elementKind === "normal-text");
+    const graphicIssue = contrastIssues.find(issue => issue.elementKind === "meaningful-graphic");
+
+    expect(normalTextIssue).toMatchObject({ requiredRatio: 4.5, criterion: "WCAG 1.4.3" });
+    expect(graphicIssue).toMatchObject({ requiredRatio: 3, criterion: "WCAG 1.4.11" });
+    expect(graphicIssue?.recommendation).toMatch(/exported slide|non-color cue/i);
+  });
+
   it("all issues reference valid slide IDs", () => {
     const slideIds = new Set(demoDeck.slides.map(s => s.id));
     for (const issue of demoAccessibilityReport.issues) {

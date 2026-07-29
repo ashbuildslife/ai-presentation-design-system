@@ -1,4 +1,4 @@
-import { demoBrands, demoContentReview, demoDeck, demoDesignTokens, demoNarrativeAnalysis, demoSourceVerificationReport, demoStructureAuditReport } from "@/lib/demo-data";
+import { demoAccessibilityReport, demoBrands, demoContentReview, demoDeck, demoDesignTokens, demoNarrativeAnalysis, demoSourceVerificationReport, demoStructureAuditReport } from "@/lib/demo-data";
 
 function Badge({ children, tone = "slate" }: { children: React.ReactNode; tone?: string }) {
   const t: Record<string, string> = { slate: "border-slate-200 bg-white text-slate-700", green: "border-emerald-200 bg-emerald-50 text-emerald-700", red: "border-red-200 bg-red-50 text-red-700", amber: "border-amber-200 bg-amber-50 text-amber-800", purple: "border-indigo-200 bg-indigo-50 text-indigo-700" };
@@ -13,6 +13,7 @@ const slideIcons: Record<string, string> = { title: "📌", narrative: "📖", c
 
 export default function Home() {
   const exportGuard = demoSourceVerificationReport.exportGuard;
+  const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-5 py-8 md:px-8 lg:px-10 bg-slate-50">
@@ -243,6 +244,35 @@ export default function Home() {
               )}
               <p className="mt-2 text-xs font-medium text-amber-900">Reviewer action: {issue.reviewerAction}</p>
               {issue.blocksExternalUse && <p className="mt-1 text-xs font-semibold text-red-700">External use blocked until finance sign-off is attached.</p>}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* CONTRAST READINESS */}
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-950">Contrast readiness</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">
+              Measured export checks keep normal text and meaningful chart graphics on their correct WCAG thresholds instead of assuming that a large-text exception applies.
+            </p>
+          </div>
+          <Badge tone={contrastIssues.length > 0 ? "red" : "green"}>
+            {contrastIssues.length > 0 ? `${contrastIssues.length} contrast gaps` : "contrast ready"}
+          </Badge>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {contrastIssues.map(issue => (
+            <div key={`${issue.slideId}-${issue.elementKind}`} className="rounded-2xl border border-red-200 bg-red-50/40 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-red-800">Slide {issue.slideId} · {issue.elementKind.replace("-", " ")}</span>
+                <Badge tone="red">{issue.measuredRatio.toFixed(1)}:1 / {issue.requiredRatio}:1</Badge>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-slate-900">{issue.criterion} threshold not met</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
+              <p className="mt-2 text-xs text-slate-500">Colors: <span className="font-mono">{issue.foreground}</span> on <span className="font-mono">{issue.background}</span></p>
+              <p className="mt-2 text-xs font-medium leading-5 text-red-800">Remediation: {issue.recommendation}</p>
             </div>
           ))}
         </div>

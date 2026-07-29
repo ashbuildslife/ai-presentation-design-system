@@ -52,9 +52,15 @@ const accessibilityIssues: AccessibilityIssue[] = [
     recommendation: "Reduce body to 2-3 bullet points. Font size should be ≥ 24pt for body text in conference-room settings."
   },
   {
-    slideId: "s3", type: "contrast" as const, severity: "critical" as const,
-    description: "Side-by-side bar chart uses #e94560 (accent red) on #fafafa background. Contrast ratio 4.1:1 — passes AA for large text but fails AAA for body labels.",
-    recommendation: "Darken chart labels to #1a1a2e (ratio 13.4:1) or increase label font weight to 700 for the accent color."
+    slideId: "s3", type: "contrast", severity: "critical",
+    elementKind: "normal-text",
+    foreground: "#e94560",
+    background: "#fafafa",
+    measuredRatio: 3.668,
+    requiredRatio: 4.5,
+    criterion: "WCAG 1.4.3",
+    description: "Side-by-side chart labels use #e94560 on #fafafa at 3.7:1, below the WCAG AA 4.5:1 threshold for normal text. A large-text exception cannot be assumed without exported font-size evidence.",
+    recommendation: "Darken chart labels to #1a1a2e (16.3:1) and rerun the contrast check against the exported slide colors."
   },
   {
     slideId: "s3", type: "color-blind" as const, severity: "major" as const,
@@ -62,9 +68,20 @@ const accessibilityIssues: AccessibilityIssue[] = [
     recommendation: "Add pattern fills (stripes for underperforming) or use blue/orange palette instead of red/green."
   },
   {
-    slideId: "s4", type: "contrast" as const, severity: "major" as const,
-    description: "Metric card numbers at 14px in #1a1a2e on #fafafa background are acceptable (ratio 13.4:1), but trend annotations in #16213e on #fafafa at 10px may be illegible.",
-    recommendation: "Set annotation font size to ≥ 12px or use #1a1a2e for consistency."
+    slideId: "s4", type: "font-size" as const, severity: "major" as const,
+    description: "Metric card numbers at 14px in #1a1a2e on #fafafa have strong contrast (16.3:1), but trend annotations in #16213e at 10px may still be illegible in a conference-room setting.",
+    recommendation: "Set annotation font size to ≥ 12px while retaining the high-contrast #1a1a2e text token."
+  },
+  {
+    slideId: "s4", type: "contrast", severity: "major",
+    elementKind: "meaningful-graphic",
+    foreground: "#aab4c4",
+    background: "#fafafa",
+    measuredRatio: 2.005,
+    requiredRatio: 3,
+    criterion: "WCAG 1.4.11",
+    description: "The benchmark line that distinguishes 2.1% peer churn from the 4.8% portfolio rate uses #aab4c4 on #fafafa at 2.0:1. Because the line carries meaning, it falls below the 3:1 non-text contrast threshold.",
+    recommendation: "Darken the benchmark line until it reaches at least 3:1 against #fafafa, retain a dashed line style as a non-color cue, and verify the exported slide rather than only the editor preview."
   },
   {
     slideId: "s5", type: "alt-text", severity: "major",

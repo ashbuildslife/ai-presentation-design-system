@@ -166,11 +166,21 @@ export interface AltTextAccessibilityIssue extends AccessibilityIssueBase {
   currentAltText: string;
 }
 
-export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text">;
+export interface ContrastAccessibilityIssue extends AccessibilityIssueBase {
+  type: "contrast";
+  elementKind: "normal-text" | "large-text" | "meaningful-graphic";
+  foreground: string;
+  background: string;
+  measuredRatio: number;
+  requiredRatio: 3 | 4.5;
+  criterion: "WCAG 1.4.3" | "WCAG 1.4.11";
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | GeneralAccessibilityIssue;
+export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast">;
+}
+
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;
