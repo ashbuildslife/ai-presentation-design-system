@@ -208,6 +208,27 @@ describe("accessibility report", () => {
     expect(graphicIssue?.recommendation).toMatch(/exported slide|non-color cue/i);
   });
 
+  it("records when chart meaning is conveyed by color alone", () => {
+    const colorRelianceIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "color-blind");
+
+    expect(colorRelianceIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of colorRelianceIssues) {
+      expect(issue.elementKind).toBe("chart-series");
+      expect(issue.encodedMeaning.length).toBeGreaterThan(30);
+      expect(issue.nonColorCues).toHaveLength(0);
+    }
+  });
+
+  it("requires color-dependent charts to add labels or patterns before export", () => {
+    const colorRelianceIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "color-blind");
+
+    for (const issue of colorRelianceIssues) {
+      expect(issue.recommendation).toMatch(/direct.*label|pattern/i);
+      expect(issue.recommendation).toMatch(/grayscale|non-color cue/i);
+      expect(issue.recommendation).not.toMatch(/palette alone is sufficient/i);
+    }
+  });
+
   it("all issues reference valid slide IDs", () => {
     const slideIds = new Set(demoDeck.slides.map(s => s.id));
     for (const issue of demoAccessibilityReport.issues) {

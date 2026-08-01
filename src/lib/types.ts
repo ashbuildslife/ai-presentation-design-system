@@ -176,11 +176,18 @@ export interface ContrastAccessibilityIssue extends AccessibilityIssueBase {
   criterion: "WCAG 1.4.3" | "WCAG 1.4.11";
 }
 
-export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast">;
+export interface ColorRelianceAccessibilityIssue extends AccessibilityIssueBase {
+  type: "color-blind";
+  elementKind: "chart-series" | "status-indicator" | "diagram";
+  encodedMeaning: string;
+  nonColorCues: Array<"direct-label" | "pattern-fill" | "shape" | "line-style">;
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | GeneralAccessibilityIssue;
+export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind">;
+}
+
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;

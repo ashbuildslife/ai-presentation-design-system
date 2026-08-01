@@ -63,9 +63,12 @@ const accessibilityIssues: AccessibilityIssue[] = [
     recommendation: "Darken chart labels to #1a1a2e (16.3:1) and rerun the contrast check against the exported slide colors."
   },
   {
-    slideId: "s3", type: "color-blind" as const, severity: "major" as const,
-    description: "Comparison slide relies on red/green color coding for early-stage (red) vs growth-stage (green). Deuteranopia affects ~5% of male viewers.",
-    recommendation: "Add pattern fills (stripes for underperforming) or use blue/orange palette instead of red/green."
+    slideId: "s3", type: "color-blind", severity: "major",
+    elementKind: "chart-series",
+    encodedMeaning: "Red marks the underperforming early-stage cohort; green marks the healthier growth-stage cohort.",
+    nonColorCues: [],
+    description: "Comparison slide relies on red/green color coding for early-stage versus growth-stage performance, so the series become indistinguishable when color is unavailable or difficult to perceive.",
+    recommendation: "Add direct series labels and a stripe pattern for the underperforming cohort, then verify the exported chart in grayscale. A blue/orange palette alone is not a sufficient non-color cue."
   },
   {
     slideId: "s4", type: "font-size" as const, severity: "major" as const,

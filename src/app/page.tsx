@@ -14,6 +14,7 @@ const slideIcons: Record<string, string> = { title: "📌", narrative: "📖", c
 export default function Home() {
   const exportGuard = demoSourceVerificationReport.exportGuard;
   const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
+  const colorRelianceIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "color-blind");
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-5 py-8 md:px-8 lg:px-10 bg-slate-50">
@@ -273,6 +274,35 @@ export default function Home() {
               <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
               <p className="mt-2 text-xs text-slate-500">Colors: <span className="font-mono">{issue.foreground}</span> on <span className="font-mono">{issue.background}</span></p>
               <p className="mt-2 text-xs font-medium leading-5 text-red-800">Remediation: {issue.recommendation}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* COLOR-INDEPENDENT CHART CUES */}
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-950">Color-independent chart cues</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">
+              Export review catches charts that encode business meaning through color alone and requires a label, pattern, shape, or line style that survives grayscale.
+            </p>
+          </div>
+          <Badge tone={colorRelianceIssues.length > 0 ? "amber" : "green"}>
+            {colorRelianceIssues.length > 0 ? `${colorRelianceIssues.length} color-only cue gap` : "non-color cues ready"}
+          </Badge>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {colorRelianceIssues.map(issue => (
+            <div key={`${issue.slideId}-${issue.elementKind}`} className="rounded-2xl border border-amber-200 bg-amber-50/40 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-amber-800">Slide {issue.slideId} · {issue.elementKind.replace("-", " ")}</span>
+                <Badge tone="amber">color alone</Badge>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-slate-900">Meaning at risk: {issue.encodedMeaning}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
+              <p className="mt-2 text-xs text-slate-500">Current non-color cues: {issue.nonColorCues.length > 0 ? issue.nonColorCues.join(", ") : "none"}</p>
+              <p className="mt-2 text-xs font-medium leading-5 text-amber-900">Remediation: {issue.recommendation}</p>
             </div>
           ))}
         </div>
