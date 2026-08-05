@@ -229,6 +229,49 @@ describe("accessibility report", () => {
     }
   });
 
+  it("flags auto-starting motion longer than five seconds without pause controls", () => {
+    const motionIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "motion");
+
+    expect(motionIssues.length).toBeGreaterThanOrEqual(2);
+    for (const issue of motionIssues) {
+      expect(issue.autoStarts).toBe(true);
+      expect(issue.durationSeconds).toBeGreaterThan(5);
+      expect(issue.pauseStopHideControl).toBe("missing");
+      expect(issue.criterion).toBe("WCAG 2.2.2");
+      expect(issue.severity).toMatch(/major|critical/);
+    }
+  });
+
+  it("requires looping animated backgrounds to offer a pausable or static alternative", () => {
+    const backgroundIssue = demoAccessibilityReport.issues.find(issue => (
+      issue.type === "motion" && issue.elementKind === "animated-background"
+    ));
+
+    expect(backgroundIssue).toBeDefined();
+    if (backgroundIssue?.type === "motion") {
+      expect(backgroundIssue.loops).toBe(true);
+      expect(backgroundIssue.honorsReducedMotion).toBe(false);
+      expect(backgroundIssue.description).toMatch(/GIF|cannot be paused/i);
+      expect(backgroundIssue.recommendation).toMatch(/pause|static/i);
+      expect(backgroundIssue.recommendation).toMatch(/reduced-motion/i);
+    }
+  });
+
+  it("keeps auto-advance timers from outrunning the slide's estimated read time", () => {
+    const autoAdvanceIssues = demoAccessibilityReport.issues
+      .filter(issue => issue.type === "motion")
+      .filter(issue => issue.elementKind === "auto-advancing-slide");
+
+    expect(autoAdvanceIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of autoAdvanceIssues) {
+      const slide = demoDeck.slides.find(item => item.id === issue.slideId);
+      expect(slide).toBeDefined();
+      expect(issue.durationSeconds).toBeLessThan(slide?.estimatedReadTimeSeconds ?? 0);
+      expect(issue.recommendation).toMatch(/manual advance|pause/i);
+      expect(issue.recommendation).toMatch(/estimated read time/i);
+    }
+  });
+
   it("all issues reference valid slide IDs", () => {
     const slideIds = new Set(demoDeck.slides.map(s => s.id));
     for (const issue of demoAccessibilityReport.issues) {

@@ -109,6 +109,30 @@ const accessibilityIssues: AccessibilityIssue[] = [
     slideId: "s7", type: "slide-title" as const, severity: "major" as const,
     description: "Slide 7's visible ROI heading is a freeform text box rather than the slide's title placeholder. Screen-reader and Outline view navigation can report the slide as untitled even though sighted viewers see a heading.",
     recommendation: "Set 'Projected Impact: $2.1M Annual Revenue Saved' as the unique slide title placeholder; if the visual layout cannot accommodate it, keep the title in an off-slide hidden title placeholder rather than a decorative text box."
+  },
+  {
+    slideId: "s1", type: "motion", severity: "critical",
+    elementKind: "animated-background",
+    autoStarts: true,
+    durationSeconds: 12,
+    loops: true,
+    pauseStopHideControl: "missing",
+    honorsReducedMotion: false,
+    criterion: "WCAG 2.2.2",
+    description: "The title slide ships a looping animated GIF background that starts automatically and cycles every 12 seconds with no pause, stop, or hide control. Animated GIFs cannot be paused by the viewer, so the motion runs for the entire time the slide is on screen.",
+    recommendation: "Replace the GIF with a static brand visual, or swap it for a video element with an explicit pause control placed near the content. Respect the viewer's reduced-motion setting as an additional safeguard — not as a substitute for a control every viewer can reach."
+  },
+  {
+    slideId: "s2", type: "motion", severity: "major",
+    elementKind: "auto-advancing-slide",
+    autoStarts: true,
+    durationSeconds: 8,
+    loops: true,
+    pauseStopHideControl: "missing",
+    honorsReducedMotion: false,
+    criterion: "WCAG 2.2.2",
+    description: "The exported share-link kiosk mode auto-advances every 8 seconds and loops back to the first slide with no pause, stop, or hide control. WCAG 2.2.2 requires a control for auto-updating content that runs longer than 5 seconds, and 8 seconds is less than half the slide's estimated 18-second read time.",
+    recommendation: "Default the share link to manual advance, or add a visible pause/play control within the first few interactive elements. Set any auto-advance interval to at least the slide's estimated read time, and never loop a board deck automatically."
   }
 ];
 

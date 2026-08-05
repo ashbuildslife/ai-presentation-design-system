@@ -15,6 +15,7 @@ export default function Home() {
   const exportGuard = demoSourceVerificationReport.exportGuard;
   const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
   const colorRelianceIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "color-blind");
+  const motionIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "motion");
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-5 py-8 md:px-8 lg:px-10 bg-slate-50">
@@ -303,6 +304,35 @@ export default function Home() {
               <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
               <p className="mt-2 text-xs text-slate-500">Current non-color cues: {issue.nonColorCues.length > 0 ? issue.nonColorCues.join(", ") : "none"}</p>
               <p className="mt-2 text-xs font-medium leading-5 text-amber-900">Remediation: {issue.recommendation}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* MOTION SAFETY */}
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-950">Motion safety</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">
+              Auto-starting animation that runs longer than five seconds needs a pause, stop, or hide control for every viewer under WCAG 2.2.2 — a reduced-motion media query alone is not enough.
+            </p>
+          </div>
+          <Badge tone={motionIssues.length > 0 ? "red" : "green"}>
+            {motionIssues.length > 0 ? `${motionIssues.length} motion control gaps` : "motion controls ready"}
+          </Badge>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {motionIssues.map(issue => (
+            <div key={`${issue.slideId}-${issue.elementKind}`} className="rounded-2xl border border-red-200 bg-red-50/40 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-red-800">Slide {issue.slideId} · {issue.elementKind.replace(/-/g, " ")}</span>
+                <Badge tone="red">auto · {issue.durationSeconds}s{issue.loops ? " · loops" : ""}</Badge>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-slate-900">{issue.criterion}: pause/stop/hide control {issue.pauseStopHideControl}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
+              <p className="mt-2 text-xs text-slate-500">Reduced-motion alternative: {issue.honorsReducedMotion ? "honored" : "not honored"}</p>
+              <p className="mt-2 text-xs font-medium leading-5 text-red-800">Remediation: {issue.recommendation}</p>
             </div>
           ))}
         </div>

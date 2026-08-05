@@ -149,7 +149,7 @@ export interface ContentReview {
   timeEstimate: string;
 }
 
-export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title";
+export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion";
 
 interface AccessibilityIssueBase {
   slideId: string;
@@ -183,11 +183,22 @@ export interface ColorRelianceAccessibilityIssue extends AccessibilityIssueBase 
   nonColorCues: Array<"direct-label" | "pattern-fill" | "shape" | "line-style">;
 }
 
-export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind">;
+export interface MotionAccessibilityIssue extends AccessibilityIssueBase {
+  type: "motion";
+  elementKind: "auto-advancing-slide" | "animated-background" | "transition-effect";
+  autoStarts: boolean;
+  durationSeconds: number;
+  loops: boolean;
+  pauseStopHideControl: "present" | "missing";
+  honorsReducedMotion: boolean;
+  criterion: "WCAG 2.2.2";
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | GeneralAccessibilityIssue;
+export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion">;
+}
+
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;
