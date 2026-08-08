@@ -343,6 +343,28 @@ const sourceEvidence: SourceEvidence[] = [
     owner: "Finance reviewer",
     expiresAt: "2026-06-25",
     freshnessStatus: "stale"
+  },
+  {
+    id: "src_advisor_program_approved_model",
+    title: "Embedded CS advisor program — approved financial model (locked)",
+    sourceType: "data-room",
+    location: "data-room/nova-cs-advisor-program-approved-v1.2.xlsx#ExecutiveSummary!B5:G18",
+    retrievedAt: "2026-06-21",
+    linkedSlideIds: ["s6", "s7"],
+    owner: "Finance partner",
+    expiresAt: "2026-08-21",
+    freshnessStatus: "current"
+  },
+  {
+    id: "src_90day_intervention_plan",
+    title: "90-day CS intervention plan — stakeholder approval memo",
+    sourceType: "analyst-note",
+    location: "shared-docs/90day-cs-intervention-plan-approved-2026-06-20.docx#Summary",
+    retrievedAt: "2026-06-20",
+    linkedSlideIds: ["s6"],
+    owner: "Operating partner",
+    expiresAt: "2026-07-04",
+    freshnessStatus: "expires-soon"
   }
 ];
 
@@ -405,6 +427,16 @@ const boardReadinessGates: BoardReadinessGate[] = [
     dueBy: "2026-06-28",
     status: "blocked",
     blockingReason: "Board-facing ROI claim still points to stale scenario-model evidence; a named finance reviewer must attach the locked model before external use."
+  },
+  {
+    id: "gate_intervention_plan_s6",
+    slideId: "s6",
+    claim: "90-day intervention plan with CS advisor deployment across 3 companies",
+    gateType: "citation-validation",
+    requiredApprover: "Operating partner",
+    dueBy: "2026-06-26",
+    status: "ready-for-review",
+    blockingReason: ""
   }
 ];
 

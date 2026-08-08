@@ -472,4 +472,17 @@ describe("source verification report", () => {
     expect(demoSourceVerificationReport.exportGuard.dueBy).toBe(blockedGate?.dueBy);
     expect(Date.parse(demoSourceVerificationReport.exportGuard.dueBy)).not.toBeNaN();
   });
+
+  it("separates blocked gates from ready-for-review gates to surface actionable items", () => {
+    const blockedGates = demoSourceVerificationReport.boardReadinessGates.filter(gate => gate.status === "blocked");
+    const readyGates = demoSourceVerificationReport.boardReadinessGates.filter(gate => gate.status === "ready-for-review");
+
+    expect(blockedGates.length).toBeGreaterThanOrEqual(1);
+    expect(readyGates.length).toBeGreaterThanOrEqual(1);
+    for (const gate of readyGates) {
+      expect(gate.blockingReason).toBe("");
+      expect(gate.requiredApprover).toMatch(/partner|reviewer|lead/i);
+      expect(Date.parse(gate.dueBy)).not.toBeNaN();
+    }
+  });
 });
