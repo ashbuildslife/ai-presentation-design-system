@@ -133,6 +133,11 @@ const accessibilityIssues: AccessibilityIssue[] = [
     criterion: "WCAG 2.2.2",
     description: "The exported share-link kiosk mode auto-advances every 8 seconds and loops back to the first slide with no pause, stop, or hide control. WCAG 2.2.2 requires a control for auto-updating content that runs longer than 5 seconds, and 8 seconds is less than half the slide's estimated 18-second read time.",
     recommendation: "Default the share link to manual advance, or add a visible pause/play control within the first few interactive elements. Set any auto-advance interval to at least the slide's estimated read time, and never loop a board deck automatically."
+  },
+  {
+    slideId: "s3", type: "table-structure" as const, severity: "major" as const,
+    description: "The comparison slide embeds a 2×3 data table with cohort revenue and churn figures, but the table has no marked header row. Screen-reader users navigating by cell cannot determine whether '4.8%' belongs to the churn or growth column without explicit scope attributes.",
+    recommendation: "Mark the top row as a header row and add scope='col' to each header cell so assistive technology can announce column context. If the table is decorative rather than data-bearing, replace it with a chart-only alternative."
   }
 ];
 

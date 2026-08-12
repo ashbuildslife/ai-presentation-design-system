@@ -278,6 +278,25 @@ describe("accessibility report", () => {
       expect(slideIds.has(issue.slideId)).toBe(true);
     }
   });
+
+  it("flags data tables that lack marked header rows for screen-reader navigation", () => {
+    const tableIssues = demoAccessibilityReport.issues.filter(i => i.type === "table-structure");
+
+    expect(tableIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of tableIssues) {
+      expect(issue.severity).toMatch(/major|critical/);
+      expect(issue.description).toMatch(/header row|scope|screen-reader/i);
+    }
+  });
+
+  it("requires table-structure remediation to name the missing markup rather than a vague suggestion", () => {
+    const tableIssues = demoAccessibilityReport.issues.filter(i => i.type === "table-structure");
+
+    for (const issue of tableIssues) {
+      expect(issue.recommendation).toMatch(/header row|scope=|mark as header/i);
+      expect(issue.recommendation).not.toMatch(/\bconsider\b|\bmaybe\b/i);
+    }
+  });
 });
 
 describe("content density report", () => {
