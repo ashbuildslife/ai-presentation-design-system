@@ -149,7 +149,7 @@ export interface ContentReview {
   timeEstimate: string;
 }
 
-export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion" | "table-structure";
+export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion" | "table-structure" | "focus-order";
 
 interface AccessibilityIssueBase {
   slideId: string;
@@ -194,11 +194,18 @@ export interface MotionAccessibilityIssue extends AccessibilityIssueBase {
   criterion: "WCAG 2.2.2";
 }
 
-export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion">;
+export interface FocusOrderAccessibilityIssue extends AccessibilityIssueBase {
+  type: "focus-order";
+  observedOrder: string[];
+  expectedOrder: string[];
+  criterion: "WCAG 2.4.3";
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | GeneralAccessibilityIssue;
+export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order">;
+}
+
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;

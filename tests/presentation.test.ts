@@ -297,6 +297,33 @@ describe("accessibility report", () => {
       expect(issue.recommendation).not.toMatch(/\bconsider\b|\bmaybe\b/i);
     }
   });
+
+  it("flags exported decks whose keyboard tab order skips past the slide content", () => {
+    const focusOrderIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-order");
+
+    expect(focusOrderIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of focusOrderIssues) {
+      expect(issue.severity).toMatch(/major|critical/);
+      expect(issue.criterion).toBe("WCAG 2.4.3");
+      expect(issue.description).toMatch(/keyboard|tab stop/i);
+      expect(issue.description).not.toMatch(/screen-reader/i);
+    }
+  });
+
+  it("records the observed tab sequence and requires a named corrected order", () => {
+    const focusOrderIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-order");
+
+    for (const issue of focusOrderIssues) {
+      expect(issue.observedOrder.length).toBeGreaterThanOrEqual(3);
+      expect(issue.expectedOrder.length).toBe(issue.observedOrder.length);
+      expect(issue.expectedOrder).not.toEqual(issue.observedOrder);
+      expect(issue.observedOrder[0]).not.toBe("slide title");
+      expect(issue.expectedOrder[0]).toBe("slide title");
+      expect(issue.recommendation).toMatch(/tab stops|focus order/i);
+      expect(issue.recommendation).toMatch(/exported share link|exported DOM/i);
+      expect(issue.recommendation).not.toMatch(/\bconsider\b|\bmaybe\b/i);
+    }
+  });
 });
 
 describe("content density report", () => {

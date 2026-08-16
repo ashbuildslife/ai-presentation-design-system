@@ -138,6 +138,14 @@ const accessibilityIssues: AccessibilityIssue[] = [
     slideId: "s3", type: "table-structure" as const, severity: "major" as const,
     description: "The comparison slide embeds a 2×3 data table with cohort revenue and churn figures, but the table has no marked header row. Screen-reader users navigating by cell cannot determine whether '4.8%' belongs to the churn or growth column without explicit scope attributes.",
     recommendation: "Mark the top row as a header row and add scope='col' to each header cell so assistive technology can announce column context. If the table is decorative rather than data-bearing, replace it with a chart-only alternative."
+  },
+  {
+    slideId: "s8", type: "focus-order" as const, severity: "critical" as const,
+    observedOrder: ["approval memo link", "next/previous deck controls", "pause control", "slide title"],
+    expectedOrder: ["slide title", "approval memo link", "pause control", "next/previous deck controls"],
+    criterion: "WCAG 2.4.3",
+    description: "In the exported share-link build, the absolutely positioned approval-memo link is the first tab stop even though it renders visually in the lower right of slide 8. Keyboard users reach the CTA before the slide title, and the kiosk pause control comes after every other interactive element. WCAG 2.4.3 requires focus to follow a sequence that preserves meaning and operability, so a viewer tabbing through the deck hears the ask before the context.",
+    recommendation: "Reorder the exported DOM so tab stops follow the visual sequence: slide title, approval memo link, pause control, then next/previous deck controls. Verify the sequence with keyboard-only navigation in the exported share link rather than the editor preview, and re-check after any slide reordering."
   }
 ];
 
