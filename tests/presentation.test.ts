@@ -102,19 +102,51 @@ describe("accessibility report", () => {
   it("flags complex layouts whose exported reading order breaks the visual sequence", () => {
     const readingOrderIssues = demoAccessibilityReport.issues.filter(i => i.type === "reading-order");
 
-    expect(readingOrderIssues.length).toBeGreaterThanOrEqual(1);
+    expect(readingOrderIssues.length).toBeGreaterThanOrEqual(2);
     for (const issue of readingOrderIssues) {
-      expect(issue.severity).toBe("critical");
-      expect(issue.description).toMatch(/screen-reader|sequence/i);
+      expect(["timeline", "comparison-grid", "metric-cards", "process-flow"]).toContain(issue.layoutKind);
+      expect(issue.observedSequence.length).toBeGreaterThanOrEqual(3);
+      expect(issue.intendedSequence.length).toBe(issue.observedSequence.length);
+      expect(issue.intendedSequence).not.toEqual(issue.observedSequence);
+      expect(issue.intendedSequence[0]).toBe("title");
+      expect(issue.description).toMatch(/screen-reader|sequence|reading order/i);
     }
   });
 
-  it("gives reading-order issues an explicit remediation sequence", () => {
+  it("keeps meaning-changing reading-order sequences critical", () => {
+    const readingOrderIssues = demoAccessibilityReport.issues.filter(i => i.type === "reading-order");
+    const meaningChanging = readingOrderIssues.filter(issue => issue.changesNarrativeMeaning);
+    const orderOnly = readingOrderIssues.filter(issue => !issue.changesNarrativeMeaning);
+
+    expect(meaningChanging.length).toBeGreaterThanOrEqual(1);
+    for (const issue of meaningChanging) {
+      expect(issue.severity).toBe("critical");
+    }
+    for (const issue of orderOnly) {
+      expect(issue.severity).not.toBe("critical");
+    }
+  });
+
+  it("gives reading-order issues an explicit semantic remediation sequence", () => {
+    const timelineIssue = demoAccessibilityReport.issues.find(i => i.type === "reading-order" && i.layoutKind === "timeline");
+
+    expect(timelineIssue).toBeDefined();
+    if (timelineIssue?.type === "reading-order") {
+      expect(timelineIssue.recommendation).toMatch(/phase 1.*phase 2.*phase 3/i);
+      expect(timelineIssue.recommendation).toMatch(/decorative|artifact/i);
+      expect(timelineIssue.recommendation).toMatch(/Reading Order pane/i);
+    }
+  });
+
+  it("marks or excludes decorative objects instead of reading them as content", () => {
     const readingOrderIssues = demoAccessibilityReport.issues.filter(i => i.type === "reading-order");
 
     for (const issue of readingOrderIssues) {
-      expect(issue.recommendation).toMatch(/phase 1.*phase 2.*phase 3/i);
-      expect(issue.recommendation).toMatch(/decorative|artifact/i);
+      for (const decorative of issue.decorativeObjects) {
+        expect(["mark-decorative", "exclude-from-order"]).toContain(decorative.handling);
+        expect(decorative.name.length).toBeGreaterThan(5);
+        expect(issue.recommendation).toMatch(/decorative|artifact|exclude/i);
+      }
     }
   });
 

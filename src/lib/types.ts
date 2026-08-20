@@ -201,11 +201,27 @@ export interface FocusOrderAccessibilityIssue extends AccessibilityIssueBase {
   criterion: "WCAG 2.4.3";
 }
 
-export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order">;
+export type ReadingOrderLayoutKind = "timeline" | "comparison-grid" | "metric-cards" | "process-flow";
+
+export interface ReadingOrderDecorativeObject {
+  name: string;
+  handling: "mark-decorative" | "exclude-from-order";
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | GeneralAccessibilityIssue;
+export interface ReadingOrderAccessibilityIssue extends AccessibilityIssueBase {
+  type: "reading-order";
+  layoutKind: ReadingOrderLayoutKind;
+  observedSequence: string[];
+  intendedSequence: string[];
+  decorativeObjects: ReadingOrderDecorativeObject[];
+  changesNarrativeMeaning: boolean;
+}
+
+export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order" | "reading-order">;
+}
+
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | ReadingOrderAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;

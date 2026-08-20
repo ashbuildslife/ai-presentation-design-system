@@ -16,6 +16,7 @@ export default function Home() {
   const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
   const colorRelianceIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "color-blind");
   const motionIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "motion");
+  const readingOrderIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "reading-order");
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-5 py-8 md:px-8 lg:px-10 bg-slate-50">
@@ -333,6 +334,42 @@ export default function Home() {
               <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
               <p className="mt-2 text-xs text-slate-500">Reduced-motion alternative: {issue.honorsReducedMotion ? "honored" : "not honored"}</p>
               <p className="mt-2 text-xs font-medium leading-5 text-red-800">Remediation: {issue.recommendation}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* READING ORDER */}
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-950">Reading order</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">
+              Exported object sequences are checked against the intended visual flow, so a screen reader never hears phase 3 before phase 1 or announces decorative connectors as content.
+            </p>
+          </div>
+          <Badge tone={readingOrderIssues.length > 0 ? "red" : "green"}>
+            {readingOrderIssues.length > 0 ? `${readingOrderIssues.length} sequence gaps` : "reading order ready"}
+          </Badge>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {readingOrderIssues.map(issue => (
+            <div key={`${issue.slideId}-${issue.layoutKind}`} className={`rounded-2xl border p-4 ${issue.changesNarrativeMeaning ? "border-red-200 bg-red-50/40" : "border-amber-200 bg-amber-50/40"}`}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className={`text-xs font-semibold uppercase tracking-wide ${issue.changesNarrativeMeaning ? "text-red-800" : "text-amber-800"}`}>
+                  Slide {issue.slideId} · {issue.layoutKind.replace("-", " ")}
+                </span>
+                <Badge tone={issue.changesNarrativeMeaning ? "red" : "amber"}>
+                  {issue.changesNarrativeMeaning ? "changes meaning" : issue.severity}
+                </Badge>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-slate-900">Screen reader hears: {issue.observedSequence.join(" → ")}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">Intended order: {issue.intendedSequence.join(" → ")}</p>
+              <p className="mt-2 text-xs leading-5 text-slate-600">{issue.description}</p>
+              {issue.decorativeObjects.length > 0 && (
+                <p className="mt-2 text-xs text-slate-500">Decorative objects: {issue.decorativeObjects.map(obj => `${obj.name} (${obj.handling.replace("-", " ")})`).join(", ")}</p>
+              )}
+              <p className={`mt-2 text-xs font-medium leading-5 ${issue.changesNarrativeMeaning ? "text-red-800" : "text-amber-900"}`}>Remediation: {issue.recommendation}</p>
             </div>
           ))}
         </div>

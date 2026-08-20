@@ -96,9 +96,24 @@ const accessibilityIssues: AccessibilityIssue[] = [
     recommendation: "Replace it with contextual alt text: 'Scatter plot: companies above 0.8 CS hires per $1M ARR show 80% lower churn, with a benchmark line at 1.2 CS hires per $1M ARR.' Add a linked data table, then have a named accessibility reviewer approve the text before export."
   },
   {
-    slideId: "s6", type: "reading-order" as const, severity: "critical" as const,
-    description: "The three-phase timeline is visually arranged left to right, but its exported object order reads phase 3 before phase 1. Screen-reader users hear the intervention plan out of sequence.",
-    recommendation: "Set the reading order to title, phase 1, phase 2, phase 3, target metric, then decorative elements; mark decorative connectors as artifacts before export."
+    slideId: "s6", type: "reading-order", severity: "critical",
+    layoutKind: "timeline",
+    observedSequence: ["phase 3 label", "decorative arrow connector", "phase 1 label", "target metric card", "phase 2 label"],
+    intendedSequence: ["title", "phase 1 label", "phase 2 label", "phase 3 label", "target metric card"],
+    decorativeObjects: [{ name: "arrow connector", handling: "mark-decorative" }],
+    changesNarrativeMeaning: true,
+    description: "The three-phase timeline is visually arranged left to right, but its exported object order reads phase 3 before phase 1 and inserts a decorative arrow connector between the phases. Screen-reader users hear the 90-day intervention plan out of sequence, so the remediation steps land before the problem they address.",
+    recommendation: "Set the reading order to title, phase 1 label, phase 2 label, phase 3 label, then the target metric card; mark the arrow connector as decorative so assistive technology skips it before export. Re-verify the sequence in the exported PowerPoint Reading Order pane rather than the editor preview."
+  },
+  {
+    slideId: "s4", type: "reading-order", severity: "major",
+    layoutKind: "metric-cards",
+    observedSequence: ["benchmark annotation", "headline churn figure", "trajectory note", "card border icon"],
+    intendedSequence: ["title", "headline churn figure", "benchmark annotation", "trajectory note"],
+    decorativeObjects: [{ name: "card border icon", handling: "exclude-from-order" }],
+    changesNarrativeMeaning: false,
+    description: "The three metric cards are exported in stacking order rather than visual order, so the screen reader announces the benchmark annotation before the 4.8% headline figure it annotates. Each card's meaning survives the jumble, but the sequence contradicts the visual left-to-right layout.",
+    recommendation: "Reorder the exported object sequence to title, headline churn figure, benchmark annotation, then trajectory note; exclude the decorative card border icons from the reading order. Confirm the order in the Reading Order pane before sharing the deck."
   },
   {
     slideId: "s8", type: "link-text" as const, severity: "major" as const,
