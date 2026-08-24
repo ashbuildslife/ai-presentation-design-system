@@ -149,7 +149,7 @@ export interface ContentReview {
   timeEstimate: string;
 }
 
-export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion" | "table-structure" | "focus-order";
+export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion" | "table-structure" | "focus-order" | "focus-not-obscured";
 
 interface AccessibilityIssueBase {
   slideId: string;
@@ -201,6 +201,14 @@ export interface FocusOrderAccessibilityIssue extends AccessibilityIssueBase {
   criterion: "WCAG 2.4.3";
 }
 
+export interface FocusNotObscuredAccessibilityIssue extends AccessibilityIssueBase {
+  type: "focus-not-obscured";
+  focusedElement: string;
+  obscuredBy: "sticky-footer" | "sticky-header" | "persistent-overlay";
+  visibility: "fully-obscured" | "partially-obscured";
+  criterion: "WCAG 2.4.11";
+}
+
 export type ReadingOrderLayoutKind = "timeline" | "comparison-grid" | "metric-cards" | "process-flow";
 
 export interface ReadingOrderDecorativeObject {
@@ -218,10 +226,10 @@ export interface ReadingOrderAccessibilityIssue extends AccessibilityIssueBase {
 }
 
 export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order" | "reading-order">;
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order" | "reading-order" | "focus-not-obscured">;
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | ReadingOrderAccessibilityIssue | GeneralAccessibilityIssue;
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | FocusNotObscuredAccessibilityIssue | ReadingOrderAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;

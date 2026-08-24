@@ -17,6 +17,8 @@ export default function Home() {
   const colorRelianceIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "color-blind");
   const motionIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "motion");
   const readingOrderIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "reading-order");
+  const focusOrderIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-order");
+  const focusVisibilityIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-not-obscured");
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-5 py-8 md:px-8 lg:px-10 bg-slate-50">
@@ -370,6 +372,45 @@ export default function Home() {
                 <p className="mt-2 text-xs text-slate-500">Decorative objects: {issue.decorativeObjects.map(obj => `${obj.name} (${obj.handling.replace("-", " ")})`).join(", ")}</p>
               )}
               <p className={`mt-2 text-xs font-medium leading-5 ${issue.changesNarrativeMeaning ? "text-red-800" : "text-amber-900"}`}>Remediation: {issue.recommendation}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* KEYBOARD VISIBILITY */}
+      <Card>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-950">Keyboard visibility</h2>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">
+              A correct tab sequence is not enough if persistent export chrome hides the control that owns focus. WCAG 2.4.11 requires the focused component to remain at least partially visible.
+            </p>
+          </div>
+          <Badge tone={focusOrderIssues.length + focusVisibilityIssues.length > 0 ? "red" : "green"}>
+            {focusOrderIssues.length + focusVisibilityIssues.length > 0 ? `${focusOrderIssues.length + focusVisibilityIssues.length} keyboard gaps` : "keyboard ready"}
+          </Badge>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {focusOrderIssues.map(issue => (
+            <div key={`${issue.slideId}-focus-order`} className="rounded-2xl border border-amber-200 bg-amber-50/40 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-amber-800">Slide {issue.slideId} · focus order</span>
+                <Badge tone="amber">{issue.criterion}</Badge>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-slate-900">Observed: {issue.observedOrder.join(" → ")}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">Expected: {issue.expectedOrder.join(" → ")}</p>
+              <p className="mt-2 text-xs leading-5 text-amber-900">Remediation: {issue.recommendation}</p>
+            </div>
+          ))}
+          {focusVisibilityIssues.map(issue => (
+            <div key={`${issue.slideId}-${issue.focusedElement}`} className="rounded-2xl border border-red-200 bg-red-50/40 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-red-800">Slide {issue.slideId} · focus not obscured</span>
+                <Badge tone="red">{issue.criterion}</Badge>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-slate-900">{issue.focusedElement} is {issue.visibility.replace("-", " ")} by {issue.obscuredBy.replace("-", " ")}</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
+              <p className="mt-2 text-xs font-medium leading-5 text-red-800">Remediation: {issue.recommendation}</p>
             </div>
           ))}
         </div>

@@ -161,6 +161,15 @@ const accessibilityIssues: AccessibilityIssue[] = [
     criterion: "WCAG 2.4.3",
     description: "In the exported share-link build, the absolutely positioned approval-memo link is the first tab stop even though it renders visually in the lower right of slide 8. Keyboard users reach the CTA before the slide title, and the kiosk pause control comes after every other interactive element. WCAG 2.4.3 requires focus to follow a sequence that preserves meaning and operability, so a viewer tabbing through the deck hears the ask before the context.",
     recommendation: "Reorder the exported DOM so tab stops follow the visual sequence: slide title, approval memo link, pause control, then next/previous deck controls. Verify the sequence with keyboard-only navigation in the exported share link rather than the editor preview, and re-check after any slide reordering."
+  },
+  {
+    slideId: "s8", type: "focus-not-obscured", severity: "critical",
+    focusedElement: "approval memo link",
+    obscuredBy: "sticky-footer",
+    visibility: "fully-obscured",
+    criterion: "WCAG 2.4.11",
+    description: "The exported share link keeps a sticky deck-controls footer at the bottom of the viewport, so tabbing to the approval memo link leaves the focused control completely hidden behind author-created content. Sighted keyboard users lose the interaction point and may think navigation has stalled.",
+    recommendation: "Reserve space with CSS scroll-padding-bottom or move the focus target above the persistent deck controls; verify that the approval memo link remains at least partially visible while tabbing through the exported share link, then re-check the focus indicator against adjacent colors."
   }
 ];
 

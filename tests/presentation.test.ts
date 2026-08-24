@@ -356,6 +356,30 @@ describe("accessibility report", () => {
       expect(issue.recommendation).not.toMatch(/\bconsider\b|\bmaybe\b/i);
     }
   });
+
+  it("flags focused controls that are fully hidden by persistent export chrome", () => {
+    const focusVisibilityIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-not-obscured");
+
+    expect(focusVisibilityIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of focusVisibilityIssues) {
+      expect(issue.visibility).toBe("fully-obscured");
+      expect(issue.obscuredBy).toBe("sticky-footer");
+      expect(issue.criterion).toBe("WCAG 2.4.11");
+      expect(issue.description).toMatch(/keyboard|focus|hidden/i);
+      expect(demoDeck.slides.find(slide => slide.id === issue.slideId)?.contentType).toBe("cta");
+    }
+  });
+
+  it("requires focus-visibility remediation to keep the control in view", () => {
+    const focusVisibilityIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-not-obscured");
+
+    expect(focusVisibilityIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of focusVisibilityIssues) {
+      expect(issue.recommendation).toMatch(/scroll-padding|move.*above|partially visible/i);
+      expect(issue.recommendation).toMatch(/exported share link/i);
+      expect(issue.recommendation).not.toMatch(/consider|maybe/i);
+    }
+  });
 });
 
 describe("content density report", () => {
