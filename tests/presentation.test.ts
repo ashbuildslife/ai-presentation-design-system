@@ -370,6 +370,30 @@ describe("accessibility report", () => {
     }
   });
 
+  it("flags presentations without a declared language for assistive technology", () => {
+    const languageIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "language-declaration");
+
+    expect(languageIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of languageIssues) {
+      expect(issue.severity).toMatch(/major|critical/);
+      expect(issue.languageScope).toBe("presentation");
+      expect(issue.criterion).toBe("WCAG 3.1.1");
+      expect(issue.declaredLanguage).toBeNull();
+      expect(issue.expectedLanguage).toMatch(/^[a-z]{2}-[A-Z]{2}$/);
+      expect(issue.description).toMatch(/screen-reader|pronounc/i);
+    }
+  });
+
+  it("requires language remediation to be verified in the exported presentation", () => {
+    const languageIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "language-declaration");
+
+    for (const issue of languageIssues) {
+      expect(issue.recommendation).toMatch(/language (tag|declaration)/i);
+      expect(issue.recommendation).toMatch(/exported (PowerPoint|presentation)/i);
+      expect(issue.recommendation).not.toMatch(/consider|maybe/i);
+    }
+  });
+
   it("requires focus-visibility remediation to keep the control in view", () => {
     const focusVisibilityIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "focus-not-obscured");
 

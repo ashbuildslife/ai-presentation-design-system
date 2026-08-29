@@ -170,7 +170,16 @@ const accessibilityIssues: AccessibilityIssue[] = [
     criterion: "WCAG 2.4.11",
     description: "The exported share link keeps a sticky deck-controls footer at the bottom of the viewport, so tabbing to the approval memo link leaves the focused control completely hidden behind author-created content. Sighted keyboard users lose the interaction point and may think navigation has stalled.",
     recommendation: "Reserve space with CSS scroll-padding-bottom or move the focus target above the persistent deck controls; verify that the approval memo link remains at least partially visible while tabbing through the exported share link, then re-check the focus indicator against adjacent colors."
-  }
+  },
+  {
+    slideId: "s8", type: "language-declaration" as const, severity: "major" as const,
+    languageScope: "presentation",
+    declaredLanguage: null,
+    expectedLanguage: "en-US",
+    criterion: "WCAG 3.1.1",
+    description: "The exported presentation has no programmatically declared default language. Screen-reader software may apply the wrong pronunciation rules when it reads the deck, leaving assistive technology users to interpret the CTA without reliable language context.",
+    recommendation: "Declare the presentation language as en-US and mark any different-language text spans explicitly, then verify the language tag in the exported PowerPoint presentation rather than only in the editor preview."
+  },
 ];
 
 export const demoAccessibilityReport: AccessibilityReport = {
