@@ -149,7 +149,7 @@ export interface ContentReview {
   timeEstimate: string;
 }
 
-export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion" | "table-structure" | "focus-order" | "focus-not-obscured" | "language-declaration";
+export type AccessibilityIssueType = "contrast" | "font-size" | "alt-text" | "color-blind" | "reading-order" | "link-text" | "slide-title" | "motion" | "table-structure" | "focus-order" | "focus-not-obscured" | "language-declaration" | "target-size";
 
 interface AccessibilityIssueBase {
   slideId: string;
@@ -217,6 +217,16 @@ export interface LanguageDeclarationAccessibilityIssue extends AccessibilityIssu
   criterion: "WCAG 3.1.1" | "WCAG 3.1.2";
 }
 
+export interface TargetSizeAccessibilityIssue extends AccessibilityIssueBase {
+  type: "target-size";
+  targetName: string;
+  widthCssPx: number;
+  heightCssPx: number;
+  minimumSizeCssPx: 24;
+  spacingToAdjacentTargetCssPx: number | null;
+  criterion: "WCAG 2.5.8";
+}
+
 export type ReadingOrderLayoutKind = "timeline" | "comparison-grid" | "metric-cards" | "process-flow";
 
 export interface ReadingOrderDecorativeObject {
@@ -234,10 +244,10 @@ export interface ReadingOrderAccessibilityIssue extends AccessibilityIssueBase {
 }
 
 export interface GeneralAccessibilityIssue extends AccessibilityIssueBase {
-  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order" | "reading-order" | "focus-not-obscured" | "language-declaration">;
+  type: Exclude<AccessibilityIssueType, "alt-text" | "contrast" | "color-blind" | "motion" | "focus-order" | "reading-order" | "focus-not-obscured" | "language-declaration" | "target-size">;
 }
 
-export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | FocusNotObscuredAccessibilityIssue | LanguageDeclarationAccessibilityIssue | ReadingOrderAccessibilityIssue | GeneralAccessibilityIssue;
+export type AccessibilityIssue = AltTextAccessibilityIssue | ContrastAccessibilityIssue | ColorRelianceAccessibilityIssue | MotionAccessibilityIssue | FocusOrderAccessibilityIssue | FocusNotObscuredAccessibilityIssue | LanguageDeclarationAccessibilityIssue | TargetSizeAccessibilityIssue | ReadingOrderAccessibilityIssue | GeneralAccessibilityIssue;
 
 export interface AccessibilityReport {
   deckId: string;

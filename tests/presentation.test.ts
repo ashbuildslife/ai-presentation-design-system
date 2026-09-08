@@ -404,6 +404,29 @@ describe("accessibility report", () => {
       expect(issue.recommendation).not.toMatch(/consider|maybe/i);
     }
   });
+
+  it("flags undersized pointer targets in exported share-link controls", () => {
+    const targetSizeIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "target-size");
+
+    expect(targetSizeIssues.length).toBeGreaterThanOrEqual(1);
+    for (const issue of targetSizeIssues) {
+      expect(issue.criterion).toBe("WCAG 2.5.8");
+      expect(Math.min(issue.widthCssPx, issue.heightCssPx)).toBeLessThan(issue.minimumSizeCssPx);
+      expect(issue.description).toMatch(/24.*CSS pixels|target size/i);
+    }
+  });
+
+  it("requires target-size remediation to account for spacing and exported dimensions", () => {
+    const targetSizeIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "target-size");
+
+    for (const issue of targetSizeIssues) {
+      expect(issue.spacingToAdjacentTargetCssPx).not.toBeNull();
+      expect(issue.spacingToAdjacentTargetCssPx).toBeLessThan(issue.minimumSizeCssPx);
+      expect(issue.recommendation).toMatch(/24.?24|spacing|enlarge/i);
+      expect(issue.recommendation).toMatch(/exported share link/i);
+      expect(issue.recommendation).not.toMatch(/consider|maybe/i);
+    }
+  });
 });
 
 describe("content density report", () => {

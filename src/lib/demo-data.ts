@@ -180,6 +180,17 @@ const accessibilityIssues: AccessibilityIssue[] = [
     description: "The exported presentation has no programmatically declared default language. Screen-reader software may apply the wrong pronunciation rules when it reads the deck, leaving assistive technology users to interpret the CTA without reliable language context.",
     recommendation: "Declare the presentation language as en-US and mark any different-language text spans explicitly, then verify the language tag in the exported PowerPoint presentation rather than only in the editor preview."
   },
+  {
+    slideId: "s8", type: "target-size" as const, severity: "major" as const,
+    targetName: "next-slide arrow control",
+    widthCssPx: 18,
+    heightCssPx: 18,
+    minimumSizeCssPx: 24,
+    spacingToAdjacentTargetCssPx: 10,
+    criterion: "WCAG 2.5.8",
+    description: "The exported share-link build renders the next-slide arrow at 18 by 18 CSS pixels against the 24 by 24 CSS pixel minimum, with only 10 CSS pixels to the adjacent pause control. The undersized targets are close enough to increase accidental activation risk for people with limited dexterity, and the presentation has no documented spacing exception.",
+    recommendation: "Increase the next-slide arrow to at least 24×24 CSS pixels and preserve at least 24 CSS pixels of clearance from the pause control. Verify the computed target dimensions and spacing in the exported share link, not only in the editor preview."
+  },
 ];
 
 export const demoAccessibilityReport: AccessibilityReport = {
