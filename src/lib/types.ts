@@ -172,6 +172,8 @@ export interface ContrastAccessibilityIssue extends AccessibilityIssueBase {
   foreground: string;
   background: string;
   measuredRatio: number;
+  renderedFontSizePt: number | null;
+  renderedFontWeight: "normal" | "bold" | null;
   requiredRatio: 3 | 4.5;
   criterion: "WCAG 1.4.3" | "WCAG 1.4.11";
 }

@@ -230,6 +230,25 @@ describe("accessibility report", () => {
     }
   });
 
+  it("records rendered text size instead of inferring a large-text exception", () => {
+    const normalTextIssue = demoAccessibilityReport.issues.find(issue => (
+      issue.type === "contrast" && issue.elementKind === "normal-text"
+    ));
+    const graphicIssue = demoAccessibilityReport.issues.find(issue => (
+      issue.type === "contrast" && issue.elementKind === "meaningful-graphic"
+    ));
+
+    expect(normalTextIssue?.type).toBe("contrast");
+    if (normalTextIssue?.type === "contrast") {
+      expect(normalTextIssue).toMatchObject({ renderedFontSizePt: 14, renderedFontWeight: "normal" });
+      expect(normalTextIssue.renderedFontSizePt ?? 0).toBeLessThan(18);
+    }
+    expect(graphicIssue?.type).toBe("contrast");
+    if (graphicIssue?.type === "contrast") {
+      expect(graphicIssue).toMatchObject({ renderedFontSizePt: null, renderedFontWeight: null });
+    }
+  });
+
   it("applies WCAG thresholds by rendered element kind", () => {
     const contrastIssues = demoAccessibilityReport.issues.filter(issue => issue.type === "contrast");
     const normalTextIssue = contrastIssues.find(issue => issue.elementKind === "normal-text");

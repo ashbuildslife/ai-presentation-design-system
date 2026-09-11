@@ -277,7 +277,7 @@ export default function Home() {
               </div>
               <p className="mt-2 text-sm font-semibold text-slate-900">{issue.criterion} threshold not met</p>
               <p className="mt-1 text-xs leading-5 text-slate-600">{issue.description}</p>
-              <p className="mt-2 text-xs text-slate-500">Colors: <span className="font-mono">{issue.foreground}</span> on <span className="font-mono">{issue.background}</span></p>
+              <p className="mt-2 text-xs text-slate-500">Colors: <span className="font-mono">{issue.foreground}</span> on <span className="font-mono">{issue.background}</span> · rendered {issue.renderedFontSizePt === null ? "graphic" : `${issue.renderedFontSizePt}pt ${issue.renderedFontWeight}`}</p>
               <p className="mt-2 text-xs font-medium leading-5 text-red-800">Remediation: {issue.recommendation}</p>
             </div>
           ))}
